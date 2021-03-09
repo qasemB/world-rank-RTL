@@ -3,6 +3,7 @@ import style from "./Layout.module.css";
 import Link from "next/link";
 import { Brightness6Rounded } from "@material-ui/icons";
 import { useEffect, useState } from "react";
+import { CircularProgress } from "@material-ui/core";
 
 const Layout = ({ children, title = "آشنایی با کشورها" }) => {
   const [theme, setTheme] = useState("light");
@@ -54,7 +55,9 @@ const Layout = ({ children, title = "آشنایی با کشورها" }) => {
         <button className={style.themeSwitcher} onClick={switchTheme}>
           <Brightness6Rounded />
         </button>
-        {`  آشنایی با کشورها  `}
+        <div>
+          {/* {loader == true ? <CircularProgress disableShrink="true" /> : null} */}
+        </div>
       </header>
 
       <main className={style.main}>{children} </main>

@@ -74,6 +74,7 @@
 .details_panel_borders img {
   width: 100%;
   border-radius: 4px;
+  border: 1px solid rgb(189, 186, 186);
 }
 
 .details_panel_borders_country {

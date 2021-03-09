@@ -2,13 +2,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import style from "./Country.module.css";
+import Link from "next/link";
 
 const getCountry = async (id) => {
   const res = await axios.get(`https://restcountries.eu/rest/v2/alpha/${id}`);
   return res.data;
 };
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const Country = ({ country }) => {
+  console.log(country);
   const [borders, setBorders] = useState([]);
 
   const getBorders = async () => {
@@ -20,7 +26,7 @@ const Country = ({ country }) => {
 
   useEffect(() => {
     getBorders();
-  }, []);
+  }, [country]);
 
   return (
     <Layout>
@@ -34,12 +40,20 @@ const Country = ({ country }) => {
 
             <div className={style.overview_numbers}>
               <div className={style.overview_population}>
-                <div className={style.overview_value}>{country.population}</div>
+                <div className={style.overview_value}>
+                  {numberWithCommas(country.population)}
+                  <span style={{ margin: "0 4px" }}>نفر</span>
+                </div>
                 <div className={style.overview_label}>جمعیت</div>
               </div>
 
               <div className={style.overview_area}>
-                <div className={style.overview_value}>{country.area}</div>
+                <div className={style.overview_value}>
+                  (km<sup style={{ fontsize: "0.5rem" }}>2</sup>)
+                  <span style={{ margin: "0 4px" }}>
+                    {numberWithCommas(country.area)}
+                  </span>
+                </div>
                 <div className={style.overview_label}>مساحت</div>
               </div>
             </div>
@@ -80,22 +94,34 @@ const Country = ({ country }) => {
               <div className={style.details_panel_value}>{country.gini} %</div>
             </div>
 
+            <div className={style.details_panel_row}>
+              <div className={style.details_panel_label}>
+                طول و عرض جغرافیایی
+              </div>
+              <div className={style.details_panel_value}>
+                {`عرض:${country.latlng[0]} -- طول:${country.latlng[1]}`}{" "}
+              </div>
+            </div>
+
             <div className={style.details_panel_borders}>
               <div className={style.details_panel_borders_label}>
                 کشورهای همسایه
               </div>
 
               <div className={style.details_panel_borders_container}>
-                {borders.map(({ flag, name }) => (
-                  <div
-                    className={style.details_panel_borders_country}
-                    key={name}
-                  >
-                    <img src={flag} alt={name} />
-                    <div className={style.details_panel_borders_name}>
-                      {name}
+                {borders.map(({ flag, name, alpha3Code }) => (
+                  <Link href={`/country/${alpha3Code}`}>
+                    <div
+                      style={{ cursor: "pointer" }}
+                      className={style.details_panel_borders_country}
+                      key={name}
+                    >
+                      <img src={flag} alt={name} />
+                      <div className={style.details_panel_borders_name}>
+                        {name}
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -115,3 +141,26 @@ export const getServerSideProps = async ({ params }) => {
     },
   };
 };
+
+// export const getStaticPaths = async () => {
+//   const res = await axios.get("https://restcountries.eu/rest/v2/all");
+//   const countries = res.data;
+
+//   const paths = countries.map((country) => ({
+//     params: { id: country.alpha3Code },
+//   }));
+
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// };
+
+// export const getStaticProps = async ({ params }) => {
+//   const country = await getCountry(params.id);
+//   return {
+//     props: {
+//       country,
+//     },
+//   };
+// };
