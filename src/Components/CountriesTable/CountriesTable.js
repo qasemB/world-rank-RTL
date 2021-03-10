@@ -115,9 +115,7 @@ const CountriesTable = ({ countries }) => {
             <div className={style.population}>
               {numberWithCommas(country.population)}
             </div>
-            <div className={style.area}>
-              {numberWithCommas(country.population) || 0}
-            </div>
+            <div className={style.area}>{country.area || 0}</div>
             <div className={style.gini}>{country.gini || 0} %</div>
           </div>
         </Link>
